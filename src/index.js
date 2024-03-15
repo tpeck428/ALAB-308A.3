@@ -16,24 +16,24 @@ async function getUserData(id) {
     const dbName = await central(id);
 
     // Use Promise.all to query databases concurrently
-    const [basicInfo, personalInfo] = await Promise.all([dbs[dbName](id), vault(id), db3]);
+    const [personalInfo, privateInfo] = await Promise.all([dbs[dbName](id), vault(id)]);
 
     // Assemble the final user data object
     const userData = {
       id: id,
-      name: personalInfo.name,
-      username: basicInfo.username,
-      email: personalInfo.email,
+      name: privateInfo.name,
+      username: personalInfo.username,
+      email: privateInfo.email,
       address: {
-        street: personalInfo.address.street,
-        suite: personalInfo.address.suite,
-        city: personalInfo.address.city,
-        zipcode: personalInfo.address.zipcode,
-        geo: personalInfo.address.geo
+        street: privateInfo.address.street,
+        suite: privateInfo.address.suite,
+        city: privateInfo.address.city,
+        zipcode: privateInfo.address.zipcode,
+        geo: privateInfo.address.geo
       },
-      phone: personalInfo.phone,
-      website: basicInfo.website,
-      company: basicInfo.company
+      phone: privateInfo.phone,
+      website: personalInfo.website,
+      company: personalInfo.company
     };
 
     return userData;
@@ -51,14 +51,14 @@ const dbs = {
 };
 
 // Example usage:
-getUserData(9)
+getUserData(5)
   .then(userData => console.log(userData))
   .catch(error => console.error(error));
 
 // Test with various id values:
 // Valid numbers: 1 through 10
 // getUserData(1)
-// getUserData(10)
+// getUserData(10);
 // Invalid numbers: less than 1 or higher than 10
 // getUserData(0)
 // getUserData(11)
